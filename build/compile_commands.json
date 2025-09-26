@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/debian/PIC_project/build",
+  "command": "/usr/bin/c++  -I/home/debian/PIC_project/IRT/subprojects/highfive/include -isystem /usr/include/hdf5/openmpi -isystem /usr/lib/x86_64-linux-gnu/openmpi/include -isystem /usr/lib/x86_64-linux-gnu/openmpi/include/openmpi -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/hybirt.dir/src/hybirt.cpp.o -c /home/debian/PIC_project/IRT/src/hybirt.cpp",
+  "file": "/home/debian/PIC_project/IRT/src/hybirt.cpp",
+  "output": "CMakeFiles/hybirt.dir/src/hybirt.cpp.o"
+},
+{
+  "directory": "/home/debian/PIC_project/build/tests/boris",
+  "command": "/usr/bin/c++  -I/home/debian/PIC_project/IRT/src -I/home/debian/PIC_project/IRT/subprojects/highfive/include -isystem /usr/include/hdf5/openmpi -isystem /usr/lib/x86_64-linux-gnu/openmpi/include -isystem /usr/lib/x86_64-linux-gnu/openmpi/include/openmpi -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/test-boris.dir/test_boris.cpp.o -c /home/debian/PIC_project/IRT/tests/boris/test_boris.cpp",
+  "file": "/home/debian/PIC_project/IRT/tests/boris/test_boris.cpp",
+  "output": "tests/boris/CMakeFiles/test-boris.dir/test_boris.cpp.o"
+}
+]
