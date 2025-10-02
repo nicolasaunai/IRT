@@ -35,7 +35,7 @@ void uniform_bz()
     for (auto ix = layout->dual_dom_start(Direction::X); ix <= layout->dual_dom_end(Direction::X);
          ++ix)
     {
-        B.z(ix) = 3.0; // Uniform magnetic field in z-direction
+        B.z(ix) = 3.0; // Uniform magnetic field in z-direction B.x, B.y = 0
     }
 
 
@@ -64,7 +64,7 @@ void uniform_bz()
         {
             particle.position[0] -= layout->dom_size(Direction::X);
         }
-        else if (iCell < layout->dual_dom_end(Direction::X))
+        else if (iCell < layout->dual_dom_start(Direction::X))
         {
             particle.position[0] += layout->dom_size(Direction::X);
         }
