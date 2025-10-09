@@ -19,7 +19,7 @@ void total_density(std::vector<Population<dimension>> const& populations, Field<
     {
         for (auto ix = 0; ix < N.data().size(); ++ix)
         {
-            N(ix) += pop.density()(ix); 
+            N(ix) += pop.density()(ix); // Not sure about the () check when running
         }
     }
 }
