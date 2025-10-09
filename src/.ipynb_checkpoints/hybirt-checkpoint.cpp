@@ -204,7 +204,7 @@ int main()
             push(pop.particles(), Eavg, Bavg);
             boundary_condition->particles(pop.particles());  //We have to do this in case the particles go out (we put them back in using PBC)
         }
-        // Este loop se podria juntar, pero lo dejo asi de momento para que se vea que lo que voy haciendo soy cosas distintas      
+              
         for (auto& pop : populations)
         {
             pop.deposit();
