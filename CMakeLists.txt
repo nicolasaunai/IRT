@@ -2,6 +2,10 @@ cmake_minimum_required (VERSION 3.20.1)
 
 project(HYBIRT VERSION 0.1 LANGUAGES CXX)
 
+# To debug
+set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
+
 # Release mode default
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
@@ -79,5 +83,7 @@ add_subdirectory(tests/boris)
 add_subdirectory(tests/ampere)
 
 add_subdirectory(tests/faraday)
+
+add_subdirectory(tests/population_moments)
 
 

@@ -20,14 +20,16 @@
 #include <cstdint>
 #include <memory>
 #include <algorithm>
-
+#include <functional>
+#include <assert.h>
 
 
 
 template<std::size_t dimension>
 void average(Field<dimension> const& F1, Field<dimension> const& F2, Field<dimension>& Favg)
 {
-    // use std::transform to do an average of F1 and F2
+    std::transform(F1.begin(), F1.end(), F2.begin(), Favg.begin(), [](double a, double b){return .5*(a+b);});
+    // use std::transform to do an average of F1 and F2    
 }
 
 
@@ -88,13 +90,11 @@ void magnetic_init(VecField<1>& B, GridLayout<1> const& layout)
 }
 
 
-
-
 int main()
 {
     double time                     = 0.;
     double final_time               = 10.0000;
-    double dt                       = 0.001;
+    double dt                       = 0.1;
     std::size_t constexpr dimension = 1;
 
     std::array<std::size_t, dimension> grid_size = {100};
@@ -121,16 +121,13 @@ int main()
     for (auto& pop : populations)
         pop.load_particles(nppc, density);
 
-
     magnetic_init(B, *layout);
     boundary_condition->fill(B);
 
-    // Faraday<dimension> faraday{layout, dt};  // TODO uncomment when Faraday is implemented
+    Faraday<dimension> faraday{layout};  // TODO uncomment when Faraday is implemented// 
     Ampere<dimension> ampere{layout};
     Ohm<dimension> ohm{layout};
     Boris<dimension> push{layout, dt};
-
-
 
     ampere(B, J);
     boundary_condition->fill(J);
@@ -142,24 +139,75 @@ int main()
     }
 
     total_density(populations, N);
-    bulk_velocity<dimension>(populations, N, V);
+    bulk_velocity<dimension>(populations, N, V); // WHY THE NEED OF <dimension> HERE ??
     ohm(B, J, N, V, E);
     boundary_condition->fill(E);
 
     diags_write_fields(B, E, V, N, time, HighFive::File::Truncate);
     diags_write_particles(populations, time, HighFive::File::Truncate);
 
+    // ICN temporal integration
     while (time < final_time)
     {
         std::cout << "Time: " << time << " / " << final_time << "\n";
 
-        // TODO implement ICN temporal integration
+        // Predictor 1
+        
+        faraday(E, B, Bnew);
+        boundary_condition->fill(Bnew);
+        ampere(Bnew, J);
+        boundary_condition->fill(J);
+        ohm(Bnew, J, N, V, Enew);
+        boundary_condition->fill(Enew);
+        average(B, Bnew, Bavg);
+        average(E, Enew, Eavg);
+        for (auto& pop : populations)
+        {
+            push(pop.particles(), Eavg, Bavg);
+            boundary_condition->particles(pop.particles());
+            pop.deposit();
+            boundary_condition->fill(pop.flux());
+            boundary_condition->fill(pop.density());
+        }
+    
+        total_density(populations, N);
+        bulk_velocity<dimension>(populations, N, V);
 
+        // Predictor 2
+
+        faraday(Eavg, B, Bnew);
+        boundary_condition->fill(Bnew);
+        ampere(Bnew, J);
+        boundary_condition->fill(J);
+        ohm(Bnew, J, N, V, Enew);
+        boundary_condition->fill(Enew);
+        average(B, Bnew, Bavg);
+        average(E, Enew, Eavg);
+        for (auto& pop : populations)
+        {
+            push(pop.particles(), Eavg, Bavg);
+            boundary_condition->particles(pop.particles());
+            pop.deposit();
+            boundary_condition->fill(pop.flux());
+            boundary_condition->fill(pop.density());
+        }
+    
+        total_density(populations, N);
+        bulk_velocity<dimension>(populations, N, V);
+
+        // Corrector 
+
+        faraday(Eavg, B, Bnew);
+        boundary_condition->fill(Bnew);
+        ampere(Bnew, J);
+        boundary_condition->fill(J);
+        ohm(Bnew, J, N, V, Enew);
+        boundary_condition->fill(Enew);       
 
         time += dt;
         diags_write_fields(B, E, V, N, time);
         std::cout << "**********************************\n";
-        // diags_write_particles(populations, time);
+        diags_write_particles(populations, time);
     }
 
 

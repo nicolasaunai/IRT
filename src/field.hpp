@@ -56,6 +56,8 @@ public:
     auto data() { return m_data; }
     auto data() const { return m_data; }
 
+    int size() const { return m_size[0]; } // added to access in the pusher/interpolate method
+
 private:
     std::array<std::size_t, dimension> m_size;
     std::vector<double> m_data;
