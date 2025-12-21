@@ -30,11 +30,13 @@ public:
 
                 J.y(ix) = -(B.z(ix+1) - B.z(ix-1)) / (2.0*dx);
                 J.z(ix) = (B.y(ix+1) - B.y(ix-1)) / (2.0*dx);
-
-                // J.x(0) = J.x(B.y.data().size()-1) = 0;
-                // J.y(0) = J.y(B.y.data().size()-1) = 0;
-                // J.z(0) = J.z(B.z.data().size()-1) = 0;
             }
+            
+            // Boundary Conditions
+            J.x(0) = J.x(B.y.data().size()-1) = 0;
+            J.y(0) = J.y(B.y.data().size()-1) = 0;
+            J.z(0) = J.z(B.z.data().size()-1) = 0;
+            
         }
         else
             throw std::runtime_error("Ampere not implemented for this dimension");
