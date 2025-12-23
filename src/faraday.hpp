@@ -35,7 +35,6 @@ public:
             }
             
             //By and Bz are both dual 
-            //I should ask about ghost cells, because if not what happens when ix=last with ix+1??
             for (auto ix = m_grid->dual_dom_start(Direction::X);
                  ix <= m_grid->dual_dom_end(Direction::X); ++ix)
             {
@@ -53,7 +52,7 @@ public:
             }
         }    
         else
-            throw std::runtime_error("Ampere not implemented for this dimension");
+            throw std::runtime_error("Faraday not implemented for this dimension");
     }
 
 private:

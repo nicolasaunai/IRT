@@ -78,10 +78,10 @@ public:
                 auto const By_primal = 0.5 * (By(ix) + By(ix - 1));
 
                 auto const ideal_y = -(Vz(ix) * Bx(ix) - Vx(ix) * Bz_primal);
-                auto const hall_y  = (Jz(ix) * Bx(ix) - Jx_primal * Bz_primal) / N(ix);
+                auto const hall_y  = (Jz(ix) * Bx(ix) - Jx_primal * Bz_primal) / N(ix); 
 
                 auto const ideal_z = -(Vx(ix) * By_primal - Vy(ix) * Bx(ix));
-                auto const hall_z  = (Jx_primal * By_primal - Jy(ix) * Bx(ix)) / N(ix);
+                auto const hall_z  = (Jx_primal * By_primal - Jy(ix) * Bx(ix)) / N(ix); 
 
                 Ey(ix) = ideal_y + 1 * hall_y + 0.000 * Jy(ix);
                 Ez(ix) = ideal_z + 1 * hall_z + 0.000 * Jz(ix);

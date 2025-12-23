@@ -32,8 +32,7 @@ void faraday_test()
     std::vector<double> Bx_vals, By_vals, Bz_vals;
     std::vector<double> Bxnew_vals, Bynew_vals, Bznew_vals;
 
-    ////////////////
-    //Only need to use the ghosts for E (creo) 
+    //////////////// 
     
     for (auto ix = layout->ghost_start(Quantity::Ex, Direction::X); ix <= layout->ghost_end(Quantity::Ex, Direction::X); ++ix)
     {

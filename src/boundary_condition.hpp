@@ -85,7 +85,6 @@ public:
                     field(ix_left)      = field(ix_right);
                 }
 
-                // std::cout << "Filling right side\n";
                 for (auto ix_right = gei; ix_right > dei; --ix_right)
                 {
                     auto const ix_left = ix_right - nbr_nodes;
@@ -107,15 +106,14 @@ public:
                 auto cell_save     = cell;
                 auto position_save = particle.position[0];
 
-                // particles left the right border injected on left side
+                // Particles right of the right border injected on left side
                 if (cell > this->m_grid->dual_dom_end(Direction::X))
                 {
                     particle.position[0] -= this->m_grid->dom_size(Direction::X);
                 }
-                // particles left the left border injected on right side
+                // Particles left of the left border injected on right side
                 else if (cell < this->m_grid->dual_dom_start(Direction::X))
                 {
-                    // Wrap around to the right side
                     particle.position[0] += this->m_grid->dom_size(Direction::X);
                 }
 
@@ -144,7 +142,6 @@ public:
     {
         if (type == "periodic")
             return std::make_unique<PeriodicBoundaryCondition<dimension>>(grid);
-        // Add more boundary condition types as needed
         throw std::runtime_error("Unknown boundary condition type: " + type);
     }
 };
