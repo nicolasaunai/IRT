@@ -37,12 +37,12 @@ void ampere_test()
     }
     
     for (auto ix = layout->ghost_start(Quantity::By, Direction::X); ix <= layout->ghost_end(Quantity::By, Direction::X); ++ix)
-    {
+    { 
         B.y(ix) = std::cos(layout->coordinate(Direction::X, Quantity::By, ix)); //By is dual  
         By_vals.push_back(B.y(ix));
     }
     for (auto ix = layout->ghost_start(Quantity::Bz, Direction::X); ix <= layout->ghost_end(Quantity::Bz, Direction::X); ++ix)
-    {
+    { 
         B.z(ix) = std::sin(layout->coordinate(Direction::X, Quantity::Bz, ix)); //Bz is dual  
         Bz_vals.push_back(B.z(ix));
     }
@@ -58,6 +58,7 @@ void ampere_test()
     }
     
     /////////////////
+    // Block that proved to be unncesary in the end
     /*
     for (auto ix = layout->ghost_start(Direction::X); ix <= layout->ghost_end(Direction::X); ++ix)
     {

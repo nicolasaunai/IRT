@@ -111,7 +111,10 @@ public:
             int iLeft = iCell;
             int iRight = iCell + 1;
 
-            //After some trials, some periodic boundary conditions seem to be necessary here; if not first and/or last nodes are not well
+            
+            // Unnecessary block, already taken care of by boundary_conditions.cpp
+            /*
+            
             if (iLeft < m_grid->dual_dom_start(Direction::X)) 
                 iLeft = m_grid->dual_dom_end(Direction::X);  
             else if (iLeft > m_grid->dual_dom_end(Direction::X)) 
@@ -121,9 +124,11 @@ public:
                 iRight = m_grid->dual_dom_end(Direction::X);  
             else if (iRight > m_grid->dual_dom_end(Direction::X))
                 iRight = m_grid->dual_dom_start(Direction::X); 
-            //
+                
+            */
             
-            m_density(iLeft) += particle.weight * (1.0 - reminder); //Using brackets, not square brackets for m_density(iLeft/iRight)!
+            
+            m_density(iLeft) += particle.weight * (1.0 - reminder); // Comment for myself: using brackets, not square brackets for m_density(iLeft/iRight)!
             m_density(iRight) += particle.weight * reminder;
 
             m_flux.x(iLeft) += particle.v[0] * particle.weight * (1.0 - reminder);

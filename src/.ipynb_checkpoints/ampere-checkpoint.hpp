@@ -23,18 +23,20 @@ public:
 
         if constexpr (dimension == 1)
         {
-            //I think Jx must be primal, although always zero
-            //I think Jy and Jz must both be primal
-            //I should ask about ghost cells, because if not what happens when ix=first with ix-1 ??
-            
+            //Jx must be DUAL, although always zero
+            for (auto ix = m_grid->dual_dom_start(Direction::X);
+                 ix <= m_grid->dual_dom_end(Direction::X); ++ix)
+            {
+                auto& Jx = J.x;
+                Jx(ix) = 0;
+            }
+
+            //Jy and Jz must both be primal 
             for (auto ix = m_grid->primal_dom_start(Direction::X);
                  ix <= m_grid->primal_dom_end(Direction::X); ++ix)
             {
                 auto const& By = B.y;
                 auto const& Bz = B.z;
-
-                auto& Jx = J.x;
-                Jx(ix) = 0;
                 
                 auto& Jy = J.y;
                 Jy(ix) = - (Bz(ix) - Bz(ix-1))/dx;

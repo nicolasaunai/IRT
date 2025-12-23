@@ -173,7 +173,7 @@ int main()
             push(pop.particles(), Eavg, Bavg);
             boundary_condition->particles(pop.particles());  //We have to do this in case the particles go out (we put them back in using PBC)
         }
-        // Este loop se podria juntar, pero lo dejo asi de momento para que se vea que lo que voy haciendo soy cosas distintas     
+        // The two loops could be joined, but I am leaving it like this for better visualisation for the moment     
         for (auto& pop : populations)
         {
             pop.deposit();
@@ -204,7 +204,7 @@ int main()
             push(pop.particles(), Eavg, Bavg);
             boundary_condition->particles(pop.particles());  //We have to do this in case the particles go out (we put them back in using PBC)
         }
-              
+        // The two loops could be joined, but I am leaving it like this for better visualisation for the moment      
         for (auto& pop : populations)
         {
             pop.deposit();
@@ -235,7 +235,7 @@ int main()
         time += dt;
         diags_write_fields(B, E, V, N, time);
         std::cout << "**********************************\n";
-        // diags_write_particles(populations, time);
+        diags_write_particles(populations, time);
     }
 
 
