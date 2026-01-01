@@ -45,11 +45,16 @@ void operator()(std::vector<Particle<dimension>>& particles,
                 VecField<dimension> const& E,
                 VecField<dimension> const& B) override
 {
+    // --- CORRECTED LINE ---
+    // Calculate domain width using functions that exist in GridLayout
+    double const number_of_cells = (this->layout_->dual_dom_end(Direction::X) - this->layout_->dual_dom_start(Direction::X) + 1);
+    double const domain_width = number_of_cells * this->layout_->cell_size(Direction::X);
+
     for (auto& particle : particles)
     {
         // Leapfrog: half-step position update
         particle.position[0] += 0.5 * particle.v[0] * this->dt_;
-
+        
         // Compute grid index and remainder for interpolation
         double dx = this->layout_->cell_size(Direction::X);
         int iCell = static_cast<int>(particle.position[0] / dx);
@@ -100,6 +105,16 @@ void operator()(std::vector<Particle<dimension>>& particles,
 
         // Final half-step position update
         particle.position[0] += 0.5 * particle.v[0] * this->dt_;
+
+        // APPLY PERIODIC PARTICLE BOUNDARY CONDITIONS
+        if (particle.position[0] >= domain_width)
+        {
+            particle.position[0] -= domain_width;
+        }
+        else if (particle.position[0] < 0.0)
+        {
+            particle.position[0] += domain_width;
+        }
     }
 }
 
@@ -118,4 +133,4 @@ private:
 };
 
 
-#endif
+#endif // PHARE_CORE_NUMERICS_PUSHER_PUSHER_HPP

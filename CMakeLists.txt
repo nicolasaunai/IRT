@@ -13,6 +13,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_BUILD_TYPE Debug)
 
 find_program(Git git)
 
@@ -78,6 +79,9 @@ add_subdirectory(tests/boris)
 add_subdirectory(tests/moments)
 add_subdirectory(tests/ampere)
 add_subdirectory(tests/faraday)
+add_subdirectory(tests/population)
+
+target_include_directories(hybirt PRIVATE ${CMAKE_SOURCE_DIR}/src)
 
 
 
