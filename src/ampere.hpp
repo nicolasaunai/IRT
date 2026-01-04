@@ -36,7 +36,7 @@ public:
             for (auto ix = m_grid->dual_dom_start(Direction::X);
                  ix <= m_grid->dual_dom_end(Direction::X); ++ix)
             { 
-                Jx(ix) = 0.0;
+                Jx(ix) = 0.0; // since in 1D Jx = 0
             }
 
             // Ey, Ez, Jx, Jz are in primal.

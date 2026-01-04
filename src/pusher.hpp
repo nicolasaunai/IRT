@@ -52,7 +52,7 @@ public:
             auto dx = this->layout_->cell_size(Direction::X); 
             auto dt = this->dt_;
 
-            particle.position[0] += particle.v[0]*dt;
+            particle.position[0] += particle.v[0]*dt/2;
                     
             auto iCell = static_cast<int>(particle.position[0] / dx); // (taken from layout mesh size) 
             auto remainder = (particle.position[0] / dx) - iCell;
