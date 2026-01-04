@@ -48,15 +48,15 @@ public:
             for (auto ix = m_grid->primal_dom_start(Direction::X);
                  ix <= m_grid->primal_dom_end(Direction::X); ++ix)
             {
-                Bnew_x(ix) = Bx(ix);
+                Bnew_x(ix) = Bx(ix); // Bx is constant in 1D
             }
 
             // By, Bz are in dual
             for (auto ix = m_grid->dual_dom_start(Direction::X);
                  ix <= m_grid->dual_dom_end(Direction::X); ++ix)
             {
-                Bnew_y(ix) = By(ix) + m_dt* (Ez(ix) - Ez(ix-1))/ (dx);
-                Bnew_z(ix) = Bz(ix) - m_dt* (Ey(ix) - Ey(ix-1))/ (dx);
+                Bnew_y(ix) = By(ix) + m_dt* (Ez(ix+1) - Ez(ix))/ (dx);
+                Bnew_z(ix) = Bz(ix) - m_dt* (Ey(ix+1) - Ey(ix))/ (dx);
             }
 
         }
