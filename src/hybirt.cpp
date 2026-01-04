@@ -41,7 +41,6 @@ void average(VecField<dimension> const& V1, VecField<dimension> const& V2,
     average(V1.z, V2.z, Vavg.z);
 }
 
-
 double bx(double x)
 {
     // Placeholder for a function that returns Bx based on x
@@ -89,7 +88,7 @@ void magnetic_init(VecField<1>& B, GridLayout<1> const& layout)
 }
 
 
-
+// Compile and run this to check ... 
 
 int main()
 {
@@ -126,7 +125,7 @@ int main()
     magnetic_init(B, *layout);
     boundary_condition->fill(B);
 
-    Faraday<dimension> faraday{layout, dt};  // TODO uncomment when Faraday is implemented
+    Faraday<dimension> faraday{layout, dt};  
     Ampere<dimension> ampere{layout};
     Ohm<dimension> ohm{layout};
     Boris<dimension> push{layout, dt};
@@ -143,65 +142,103 @@ int main()
 
     total_density(populations, N);
     bulk_velocity<dimension>(populations, N, V);
+    
     ohm(B, J, N, V, E);
     boundary_condition->fill(E);
 
     diags_write_fields(B, E, V, N, time, HighFive::File::Truncate);
     diags_write_particles(populations, time, HighFive::File::Truncate);
 
+    // ICN with 2 predictor steps
     while (time < final_time)
     {
         std::cout << "Time: " << time << " / " << final_time << "\n";
+        // 1) First Prediction
+        // --------------------
 
-        // TODO implement ICN temporal integration
+        // Predictor fields (using old moments)
         faraday(E, B, Bnew);
         boundary_condition->fill(Bnew);
-        // std::cout << " Faraday implemented \n";
-
-
-        ampere(B, J);
+    
+        ampere(Bnew, J);
         boundary_condition->fill(J);
-        // std::cout << " Ampere implemented \n";
-
-
+    
+        ohm(Bnew, J, N, V, Enew);
+        boundary_condition->fill(Enew);
+    
+        // Midpoint average fields
+        average(E, Enew, Eavg);
+        average(B, Bnew, Bavg);
+    
+        // Push particles with the midpoint fields (1st half time step)
+        for (auto& pop : populations) {
+            push(pop.particles(), Eavg, Bavg);
+            boundary_condition->particles(pop.particles());
+        }
+    
+        // Recompute the moments
         for (auto& pop : populations)
         {
             pop.deposit();
-            // std::cout << " pop deposit \n";
             boundary_condition->fill(pop.flux());
-            // std::cout << " boundary coundition flux \n";
             boundary_condition->fill(pop.density());
-            // std::cout << " boundary coundition density \n";
-
         }
-        
+    
         total_density(populations, N);
-        // std::cout << " total density \n";
         bulk_velocity<dimension>(populations, N, V);
-        // std::cout << " bulk velocity \n";
 
-        
-        ohm(Bnew, J, N, V, E);
-        // std::cout << " ohm \n";
-        boundary_condition->fill(E);
-        // std::cout << " boundary coundition after ohm \n";
+        // 2) Second Predictor
+        // --------------------
 
+        faraday(Eavg, B, Bnew);
+        boundary_condition->fill(Bnew);
 
-        //take average of E B 
-        average(E, Enew, Eavg);
-        // std::cout << " average of E \n";
+        ampere(Bnew, J); 
+        boundary_condition->fill(J);
+
+        ohm(Bnew, J, N, V, Enew);
+        boundary_condition->fill(Enew);
+
+        // compute new midpoint
+        average(E, Enew, Eavg);        
         average(B, Bnew, Bavg);
-        // std::cout << " average of B \n";
 
-        E = Eavg;
-        B = Bavg;
+        // Push particles agains (2nd half time step)
+        for (auto& pop : populations) {
+            push(pop.particles(), Eavg, Bavg);
+            boundary_condition->particles(pop.particles());
+        }
+    
+        for (auto& pop : populations)
+        {
+            pop.deposit();
+            boundary_condition->fill(pop.flux());
+            boundary_condition->fill(pop.density());
+        }
 
+        total_density(populations, N);
+        bulk_velocity<dimension>(populations, N, V);
+
+
+        // Corrector fields 
+        faraday(Eavg, B, Bnew);
+        boundary_condition->fill(Bnew);
+    
+        ampere(Bnew, J);
+        boundary_condition->fill(J);
+    
+        ohm(Bnew, J, N, V, Enew);
+        boundary_condition->fill(Enew);
+    
+        // Advance the timestep
+        E = Enew;
+        B = Bnew;
+    
         time += dt;
         diags_write_fields(B, E, V, N, time);
         std::cout << "**********************************\n";
         diags_write_particles(populations, time);
     }
-
 
     return 0;
 }
