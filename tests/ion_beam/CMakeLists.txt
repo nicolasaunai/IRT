@@ -7,6 +7,7 @@ set(SOURCES test_ionbeam.cpp
     ${CMAKE_SOURCE_DIR}/src/gridlayout.hpp
 )
 add_executable(${PROJECT_NAME} ${SOURCES})
+add_test(NAME test-ion-beam COMMAND test-ion_beam)
 target_link_libraries(${PROJECT_NAME} PRIVATE HighFive)
 message(${PROJECT_NAME} " target: ${SOURCES}")
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/src/)
