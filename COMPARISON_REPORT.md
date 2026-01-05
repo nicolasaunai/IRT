@@ -219,7 +219,7 @@ auto const iCell         = iCell_ + m_grid->dual_dom_start(Direction::X);
 // TODO implement linear weighting deposit for the density and flux
 
 // Linear weighting (1st order interpolation) to deposit particles onto nodes
-// 2 nodes: iCell (lest) iCell + 1 (right)
+// 2 nodes: iCell (left) iCell + 1 (right)
 m_density(iCell) += particle.weight * (1.0 - remainder);
 m_density(iCell + 1) += particle.weight * remainder;
 
