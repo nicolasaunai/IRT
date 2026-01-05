@@ -1,2 +1,4 @@
 subprojects
 compile_commands.json
+.ipynb_checkpoints/
+build/
