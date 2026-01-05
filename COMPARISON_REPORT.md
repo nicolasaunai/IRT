@@ -419,6 +419,7 @@ for (auto dim = 0; dim < dimension; ++dim)
 4. **Variable naming:**
    - **PR #15:** Uses `remainder`, clearer mathematical names (tx, ty, tz, sx, sy, sz)
    - **hybirt:** Uses `reminder` (typo), more compact names (qdto2m, s)
+   - **Note:** hybirt also has a typo in error message: "1nd update" instead of "1st update"
 
 5. **Position calculation:**
    - **PR #15:** `x_norm = pos/dx`, `iCell = int(x_norm) + start`, `remainder = x_norm - floor(x_norm)`
