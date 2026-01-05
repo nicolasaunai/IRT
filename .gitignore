@@ -1,2 +1,25 @@
 subprojects
 compile_commands.json
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+*-checkpoint.*
+*.ipynb_checkpoints
+
+# CMake build artifacts
+build/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+
+# HDF5 output files
+*.h5
+
+# Compiled binaries
+hybirt
+test_ampere
+test_faraday
+test_population_deposit
+test-boris
