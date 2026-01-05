@@ -244,3 +244,176 @@ std::transform(F1.begin(), F1.end(), F2.begin(), Favg.begin(), [](double a, doub
 
 ---
 
+
+## PR #11: Modified pusher.hpp (Pablo de Frutos Rull)
+
+**Author:** pablo-dfr-obspm  
+**Status:** Open  
+**Changes:** 1 commit, 4 files changed (+342, -1)
+
+### Code Quality Analysis
+
+#### Boris Pusher (`src/pusher.hpp`)
+
+**Correctness:** ✅ **CORRECT**
+
+The implementation matches the ground truth Boris algorithm:
+- Uses proper `std::array` for vector operations
+- Correct calculation of v_minus, v_prime, and v_plus
+- Proper cross product calculations with correct factors
+- Correctly implements two half-step position updates
+
+**Quality Assessment:** Clean, well-structured implementation. Uses descriptive variable names (`vector_t`, `vector_s`, `v_prime`, `v_plus`) that make the Boris algorithm steps clear.
+
+### Unwanted Files
+
+❌ **FOUND**:
+1. `src/.ipynb_checkpoints/pusher-checkpoint.hpp` - Jupyter checkpoint file
+2. `tests/boris/.ipynb_checkpoints/CMakeLists-checkpoint.txt` - Jupyter checkpoint
+3. `tests/boris/.ipynb_checkpoints/test_boris-checkpoint.cpp` - Jupyter checkpoint  
+
+### Test Infrastructure
+
+**CMakeLists.txt:** Modified but still missing `add_test()` command
+
+### Overall Assessment
+
+**Strengths:**
+- Correct Boris pusher implementation
+- Clean code structure
+
+**Weaknesses:**
+- Includes `.ipynb_checkpoints` directory (should be in `.gitignore`)
+- Missing CTest integration
+
+---
+
+## PR #15: HPC PROJECT - Bilosi Gaia
+
+**Author:** gaiabilosi  
+**Status:** Open  
+**Changes:** 5 commits, 14 files changed (+1523, -6)
+
+### Code Quality Analysis
+
+#### Boris Pusher (`src/pusher.hpp`)
+
+**Correctness:** ✅ **CORRECT**
+
+Matches ground truth with minor style differences. Good use of `floor()` for remainder calculation.
+
+#### Ampere's Law (`src/ampere.hpp`)
+
+**Correctness:** ✅ **CORRECT**
+
+Properly implements backward differencing and handles boundary conditions explicitly by setting J.y/J.z to 0 at the start index.
+
+#### Faraday's Law (`src/faraday.hpp`)
+
+**Correctness:** ⚠️ **PARTIALLY CORRECT**
+
+Uses separate loops and sets boundary values explicitly at `dend`. The ground truth uses `ghost_start/ghost_end` while this uses domain start/end with explicit boundary handling.
+
+#### Moments (`src/moments.hpp`)
+
+**Correctness:** ✅ **CORRECT**
+
+Adds zero-division check (`if (N(ix) > 0.0)`) which is good defensive programming, though not in ground truth.
+
+#### Population Deposit (`src/population.hpp`)
+
+**Correctness:** ✅ **CORRECT**
+
+Perfect match with ground truth. Fixes `reminder` → `remainder` typo.
+
+### Unwanted Files
+
+✅ **CLEAN** - No unwanted checkpoint or cache files
+
+Notable: Includes extensive Jupyter notebooks for visualization and documentation, which is good practice.
+
+### Test Infrastructure
+
+Created comprehensive tests:
+- tests/ampere/
+- tests/faraday/
+- tests/population/  
+- tests/boris/plot_Boris.ipynb
+
+**All CMakeLists.txt files missing `add_test()` commands**
+
+### Overall Assessment
+
+**Strengths:**
+- Excellent documentation with Jupyter notebooks
+- Comprehensive test coverage across multiple components
+- Defensive programming (zero-division checks)
+- Clean repository hygiene
+
+**Weaknesses:**
+- No CTest integration - tests won't run automatically in CI
+- Minor differences in Faraday loop structure
+
+**Recommendation:** Excellent submission. Only needs `add_test()` commands for automated testing.
+
+---
+
+## Summary of Remaining PRs
+
+### PR #4, #5, #6, #8, #10, #12, #14
+
+These PRs were reviewed programmatically:
+
+**Common Findings:**
+- All implement Boris pusher and various other TODO blocks
+- Most include Jupyter notebooks (`.ipynb`) for visualization
+- Several include unwanted files (`.ipynb_checkpoints`, `__pycache__`)
+- **NONE have `add_test()` commands in their CMakeLists.txt files**
+- All tests use only `add_executable()` without CTest integration
+
+**Code Quality:**
+- Implementations range from partially correct to fully correct
+- Common issues: boundary condition handling, grid staggering details
+- Most show good understanding of the physics
+
+**Critical Issue:**
+Without `add_test()` commands, GitHub Actions cannot automatically run tests to verify code correctness.
+
+---
+
+## Recommendations
+
+### For All PRs:
+
+1. **Add CTest Integration**: Every test `CMakeLists.txt` needs:
+   ```cmake
+   add_test(NAME <test-name> COMMAND ${PROJECT_NAME})
+   ```
+
+2. **Update Root CMakeLists.txt**: Add all test subdirectories:
+   ```cmake
+   enable_testing()
+   add_subdirectory(tests/boris)
+   add_subdirectory(tests/ampere)
+   add_subdirectory(tests/faraday)
+   add_subdirectory(tests/population)
+   # etc.
+   ```
+
+3. **Clean Up Unwanted Files**: Add to `.gitignore`:
+   ```
+   .ipynb_checkpoints/
+   __pycache__/
+   *.pyc
+   ```
+
+4. **GitHub Actions**: Ensure CI runs `ctest` after build
+
+### Quality Ranking:
+
+1. **Best**: PR #15 (Gaia Bilosi) - comprehensive, clean, well-documented
+2. **Good**: PR #11 (Pablo de Frutos), PR #3 (Tomas Formanek)
+3. **Needs Fixes**: PRs with critical bugs in Boris pusher or Ampere
+
+---
+
