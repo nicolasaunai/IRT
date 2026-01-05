@@ -7,6 +7,8 @@
 #include <memory>
 #include <iostream>
 
+// Get E from B, J, v, N
+
 template<std::size_t dimension>
 class Ohm
 {
