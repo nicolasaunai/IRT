@@ -1,4 +1,0 @@
-test-boris 1 0.0100276
-test-waves 1 0.000922797
-test-ion_beam 1 0.00143908
----
