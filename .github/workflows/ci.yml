@@ -2,11 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches:
-      - master
+    branches: [ master ]
   push:
-    branches:
-      - master
+    branches: [ master ]
 
 jobs:
   build-and-test:
@@ -19,9 +17,12 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake build-essential
+          sudo apt-get install -y \
+            cmake \
+            build-essential \
+            libhdf5-dev
 
-      - name: Configure (CMake)
+      - name: Configure
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
