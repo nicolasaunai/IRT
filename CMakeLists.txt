@@ -72,9 +72,16 @@ set (SOURCE_CPP
 add_executable(hybirt ${SOURCE_INC} ${SOURCE_CPP})
 
 target_link_libraries(hybirt PRIVATE HighFive)
+
 enable_testing()
 
 add_subdirectory(tests/boris)
+add_subdirectory(tests/moments)
+add_subdirectory(tests/ampere)
+add_subdirectory(tests/faraday)
+
+
+
 
 
 

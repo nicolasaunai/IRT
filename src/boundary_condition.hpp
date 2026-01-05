@@ -33,7 +33,6 @@ public:
     }
 
     virtual void particles(std::vector<Particle<dimension>>& particles) = 0;
-    virtual ~BoundaryCondition() = default;
 
 protected:
     std::shared_ptr<GridLayout<dimension>> m_grid;

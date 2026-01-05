@@ -55,7 +55,7 @@ public:
     }
 
 
-    void load_particles(int nppc, auto density)
+    void load_particles(int nppc, auto density) //nppc stands for “number of particles per cell.
     {
         static_assert(dimension == 1, "Population only implemented for 1D");
         auto randGen = getRNG(std::nullopt);
@@ -104,11 +104,23 @@ public:
         {
             double const iCell_float = particle.position[0] / m_grid->cell_size(Direction::X);
             int const iCell_         = static_cast<int>(iCell_float);
-            double const reminder    = iCell_float - iCell_;
+            double const remainder    = iCell_float - iCell_;
             auto const iCell         = iCell_ + m_grid->dual_dom_start(Direction::X);
 
 
             // TODO implement linear weighting deposit for the density and flux
+            m_density(iCell + 1)     += particle.weight * (1.0 - remainder);
+            m_density(iCell) += particle.weight * remainder;
+            
+            m_flux.x(iCell + 1) += particle.weight * particle.v[0] * (1.0 - remainder);
+            m_flux.y(iCell + 1) += particle.weight * particle.v[1] * (1.0 - remainder);
+            m_flux.z(iCell + 1) += particle.weight * particle.v[2] * (1.0 - remainder);
+
+            m_flux.x(iCell) += particle.weight * particle.v[0] * remainder;
+            m_flux.y(iCell) += particle.weight * particle.v[1] * remainder;
+            m_flux.z(iCell) += particle.weight * particle.v[2] * remainder;
+
+            // ----------------------------
         }
     }
 
