@@ -13,7 +13,6 @@ CMakeFiles/
 cmake_install.cmake
 Makefile
 *.cmake
-!CMakeLists.txt
 
 # HDF5 output files
 *.h5
