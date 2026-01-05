@@ -104,11 +104,23 @@ public:
         {
             double const iCell_float = particle.position[0] / m_grid->cell_size(Direction::X);
             int const iCell_         = static_cast<int>(iCell_float);
-            double const reminder    = iCell_float - iCell_;
+            double const remainder    = iCell_float - iCell_;
             auto const iCell         = iCell_ + m_grid->dual_dom_start(Direction::X);
 
 
             // TODO implement linear weighting deposit for the density and flux
+            m_density(iCell + 1) += remainder * particle.weight ; 
+            m_density(iCell) += (1 - remainder) * particle.weight ; 
+
+            m_flux.x(iCell + 1) += remainder * particle.v[0] * particle.weight ; 
+            m_flux.x(iCell) += (1 - remainder) * particle.v[0] * particle.weight ; 
+
+            m_flux.y(iCell + 1) += remainder * particle.v[1] * particle.weight ; 
+            m_flux.y(iCell) += (1 - remainder) * particle.v[1] * particle.weight ; 
+
+            m_flux.z(iCell + 1) += remainder * particle.v[2] * particle.weight ; 
+            m_flux.z(iCell) += (1 - remainder) * particle.v[2] * particle.weight ; 
+            
         }
     }
 

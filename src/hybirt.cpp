@@ -28,6 +28,7 @@ template<std::size_t dimension>
 void average(Field<dimension> const& F1, Field<dimension> const& F2, Field<dimension>& Favg)
 {
     // use std::transform to do an average of F1 and F2
+    std::transform(F1.begin(), F1.end(), F2.begin(), Favg.begin(), [](double a, double b) { return 0.5 * (a + b); });
 }
 
 
@@ -50,14 +51,14 @@ double bx(double x)
 double by(double x)
 {
     // Placeholder for a function that returns By based on x
-    return 1.0; // Example value
+    return 0.0; // Example value
 }
 
 
 double bz(double x)
 {
     // Placeholder for a function that returns Bz based on x
-    return 0.0; // Example value
+    return 1.0; // Example value
 }
 
 double density(double x)
@@ -125,12 +126,10 @@ int main()
     magnetic_init(B, *layout);
     boundary_condition->fill(B);
 
-    // Faraday<dimension> faraday{layout, dt};  // TODO uncomment when Faraday is implemented
+    Faraday<dimension> faraday{layout, dt};
     Ampere<dimension> ampere{layout};
     Ohm<dimension> ohm{layout};
     Boris<dimension> push{layout, dt};
-
-
 
     ampere(B, J);
     boundary_condition->fill(J);
@@ -153,15 +152,77 @@ int main()
     {
         std::cout << "Time: " << time << " / " << final_time << "\n";
 
-        // TODO implement ICN temporal integration
+        // prediction step
+        faraday(B, Bnew, E);
+        boundary_condition->fill(Bnew);
 
+        ampere(Bnew, J);
+        boundary_condition->fill(J);
+
+        ohm(Bnew, J, N, V, Enew);
+        boundary_condition->fill(Enew);
+
+        average(E, Enew, Eavg);
+        average(B, Bnew, Bavg);
+
+        for (auto& pop : populations) 
+        {   
+            push(pop.particles(), Eavg, Bavg);
+            boundary_condition->particles(pop.particles()); // apply boundary conditions to particles, to avoid them going out of the domain
+
+            pop.deposit(); 
+            boundary_condition->fill(pop.density()); // apply boundary conditions to density and flux fields
+            boundary_condition->fill(pop.flux());
+        }
+
+        total_density(populations, N);
+        bulk_velocity<dimension>(populations, N, V);
+        
+        // prediction 2 step
+        faraday(B, Bnew, Eavg);
+        boundary_condition->fill(Bnew);
+
+        ampere(Bnew, J);
+        boundary_condition->fill(J);
+
+        ohm(Bnew, J, N, V, Enew);
+        boundary_condition->fill(Enew);
+
+        average(E, Enew, Eavg);
+        average(B, Bnew, Bavg);
+
+        for (auto& pop : populations) 
+        {   
+            push(pop.particles(), Eavg, Bavg);
+            boundary_condition->particles(pop.particles());
+
+            pop.deposit(); 
+            boundary_condition->fill(pop.density());
+            boundary_condition->fill(pop.flux());
+        }
+
+        total_density(populations, N);
+        bulk_velocity<dimension>(populations, N, V);
+
+        // correction step
+        faraday(B, Bnew, Eavg);
+        boundary_condition->fill(Bnew);
+
+        ampere(Bnew, J);
+        boundary_condition->fill(J);
+
+        ohm(Bnew, J, N, V, Enew);
+        boundary_condition->fill(Enew);
+
+        // update fields for next iteration
+        B = Bnew;
+        E = Enew;
 
         time += dt;
         diags_write_fields(B, E, V, N, time);
         std::cout << "**********************************\n";
-        // diags_write_particles(populations, time);
+        diags_write_particles(populations, time);
     }
-
-
+    
     return 0;
 }

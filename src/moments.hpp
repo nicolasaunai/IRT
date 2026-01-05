@@ -18,6 +18,10 @@ void total_density(std::vector<Population<dimension>> const& populations, Field<
     for (auto const& pop : populations)
     {
         // TODO calculate the total density
+        for (auto ix = 0; ix < N.data().size(); ++ix)
+        {
+            N(ix) += pop.density()(ix);
+        }
     }
 }
 
@@ -35,12 +39,14 @@ void bulk_velocity(std::vector<Population<dimension>> const& populations, Field<
     {
         for (auto ix = 0; ix < N.data().size(); ++ix)
         {
-            V.x(ix) += pop.flux().x(ix);
-            V.y(ix) += pop.flux().y(ix);
-            V.z(ix) += pop.flux().z(ix);
+            if (N(ix) > 0)
+            {
+                V.x(ix) += pop.flux().x(ix) / N(ix);
+                V.y(ix) += pop.flux().y(ix) / N(ix);
+                V.z(ix) += pop.flux().z(ix) / N(ix);
+            }
         }
     }
-    // TODO calculate bulk velocity by dividing by density N
 }
 
 #endif

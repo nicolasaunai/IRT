@@ -75,7 +75,8 @@ target_link_libraries(hybirt PRIVATE HighFive)
 enable_testing()
 
 add_subdirectory(tests/boris)
-
+add_subdirectory(tests/population)
+add_subdirectory(tests/ampere_faraday)
 
 
 
