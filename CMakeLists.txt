@@ -75,6 +75,8 @@ target_link_libraries(hybirt PRIVATE HighFive)
 enable_testing()
 
 add_subdirectory(tests/boris)
+add_subdirectory(tests/ion_beam)
+add_subdirectory(tests/waves)
 
 
 
