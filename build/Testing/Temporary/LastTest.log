@@ -1,0 +1,82 @@
+Start testing: Jan 05 17:04 UTC
+----------------------------------------------------------
+1/4 Testing: test-boris
+1/4 Test: test-boris
+Command: "/home/runner/work/IRT/IRT/build/tests/boris/test-boris"
+Directory: /home/runner/work/IRT/IRT/build/tests/boris
+"test-boris" start time: Jan 05 17:04 UTC
+Output:
+----------------------------------------------------------
+Running uniform_bz test...
+Running drift_ey test...
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"test-boris" end time: Jan 05 17:04 UTC
+"test-boris" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/4 Testing: test-moments
+2/4 Test: test-moments
+Command: "/home/runner/work/IRT/IRT/build/tests/moments/test-moments"
+Directory: /home/runner/work/IRT/IRT/build/tests/moments
+"test-moments" start time: Jan 05 17:04 UTC
+Output:
+----------------------------------------------------------
+Total density:
+5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 
+Bulk velocity (Vx):
+1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"test-moments" end time: Jan 05 17:04 UTC
+"test-moments" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/4 Testing: test-ampere
+3/4 Test: test-ampere
+Command: "/home/runner/work/IRT/IRT/build/tests/ampere/test-ampere"
+Directory: /home/runner/work/IRT/IRT/build/tests/ampere
+"test-ampere" start time: Jan 05 17:04 UTC
+Output:
+----------------------------------------------------------
+Jy and Jz from Ampere (expect Jy = -2, Jz = 1):
+ix=1 Jy=-2 Jz=1
+ix=2 Jy=-2 Jz=1
+ix=3 Jy=-2 Jz=1
+ix=4 Jy=-2 Jz=1
+ix=5 Jy=-2 Jz=1
+ix=6 Jy=-2 Jz=1
+ix=7 Jy=-2 Jz=1
+ix=8 Jy=-2 Jz=1
+ix=9 Jy=-2 Jz=1
+ix=10 Jy=-2 Jz=1
+ix=11 Jy=-2 Jz=1
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"test-ampere" end time: Jan 05 17:04 UTC
+"test-ampere" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/4 Testing: test-faraday
+4/4 Test: test-faraday
+Command: "/home/runner/work/IRT/IRT/build/tests/faraday/test-faraday"
+Directory: /home/runner/work/IRT/IRT/build/tests/faraday
+"test-faraday" start time: Jan 05 17:04 UTC
+Output:
+----------------------------------------------------------
+Faraday test complete, B saved to faraday_test.h5
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"test-faraday" end time: Jan 05 17:04 UTC
+"test-faraday" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Jan 05 17:04 UTC
