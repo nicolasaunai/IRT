@@ -1,5 +1,0 @@
-test-moments 2 0.00108481
-test-ampere 2 0.000840792
-test-faraday 2 0.00378889
-test-boris 1 0.0105677
----
