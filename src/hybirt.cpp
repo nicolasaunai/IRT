@@ -27,7 +27,7 @@
 template<std::size_t dimension>
 void average(Field<dimension> const& F1, Field<dimension> const& F2, Field<dimension>& Favg)
 {
-    // use std::transform to do an average of F1 and F2
+    std::transform(F1.begin(), F1.end(), F2.begin(), Favg.begin(), [](double a, double b) { return 0.5 * (a + b); }); 
 }
 
 
@@ -125,7 +125,7 @@ int main()
     magnetic_init(B, *layout);
     boundary_condition->fill(B);
 
-    // Faraday<dimension> faraday{layout, dt};  // TODO uncomment when Faraday is implemented
+    Faraday<dimension> faraday{layout};
     Ampere<dimension> ampere{layout};
     Ohm<dimension> ohm{layout};
     Boris<dimension> push{layout, dt};
@@ -153,7 +153,80 @@ int main()
     {
         std::cout << "Time: " << time << " / " << final_time << "\n";
 
-        // TODO implement ICN temporal integration
+        //Prediction 1
+        
+        faraday(B, E, Bnew, dt);
+        boundary_condition->fill(Bnew);
+
+        ampere(Bnew, J);
+        boundary_condition->fill(J);
+        
+        ohm(Bnew, J, N, V, Enew);
+        boundary_condition->fill(Enew);
+
+        average(B, Bnew, Bavg);
+        average(E, Enew, Eavg);
+        
+        for (auto& pop : populations)
+        {
+            push(pop.particles(), Eavg, Bavg);
+            boundary_condition->particles(pop.particles());
+        }
+        
+        for (auto& pop : populations)
+        {
+            pop.deposit();
+            boundary_condition->fill(pop.flux());
+            boundary_condition->fill(pop.density());
+        }
+    
+        total_density(populations, N);
+        bulk_velocity<dimension>(populations, N, V);        
+        
+        //Prediction 2
+        
+        faraday(B, Eavg, Bnew, dt);
+        boundary_condition->fill(Bnew);
+
+        ampere(Bnew, J);
+        boundary_condition->fill(J);
+        
+        ohm(Bnew, J, N, V, Enew);
+        boundary_condition->fill(Enew);
+
+        average(B, Bnew, Bavg);
+        average(E, Enew, Eavg);
+        
+
+        for (auto& pop : populations)
+        {
+            push(pop.particles(), Eavg, Bavg);
+            boundary_condition->particles(pop.particles());
+        }
+        
+        for (auto& pop : populations)
+        {
+            pop.deposit();
+            boundary_condition->fill(pop.flux());
+            boundary_condition->fill(pop.density());
+        }
+    
+        total_density(populations, N);
+        bulk_velocity<dimension>(populations, N, V);  
+        
+        //Correction
+        
+        faraday(B, Eavg, Bnew, dt);
+        boundary_condition->fill(Bnew);
+
+        ampere(Bnew, J);
+        boundary_condition->fill(J);
+        
+        ohm(Bnew, J, N, V, Enew);
+        boundary_condition->fill(Enew);
+
+        B = Bnew;
+        E = Enew;       
 
 
         time += dt;

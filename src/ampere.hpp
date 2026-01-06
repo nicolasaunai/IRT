@@ -23,7 +23,27 @@ public:
 
         if constexpr (dimension == 1)
         {
-            // TODO your code here
+            //Jx must be DUAL, although always zero
+            for (auto ix = m_grid->dual_dom_start(Direction::X);
+                 ix <= m_grid->dual_dom_end(Direction::X); ++ix)
+            {
+                auto& Jx = J.x;
+                Jx(ix) = 0;
+            }
+
+            //Jy and Jz must both be primal 
+            for (auto ix = m_grid->primal_dom_start(Direction::X);
+                 ix <= m_grid->primal_dom_end(Direction::X); ++ix)
+            {
+                auto const& By = B.y;
+                auto const& Bz = B.z;
+                
+                auto& Jy = J.y;
+                Jy(ix) = - (Bz(ix) - Bz(ix-1))/dx;
+
+                auto& Jz = J.z;
+                Jz(ix) = (By(ix) - By(ix-1))/dx;
+            } 
         }
         else
             throw std::runtime_error("Ampere not implemented for this dimension");
