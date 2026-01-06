@@ -58,7 +58,7 @@ void ampere_test()
     }
     
     /////////////////
-    // Block that proved to be unncesary in the end
+    // Block that proved to be unnecessary in the end
     /*
     for (auto ix = layout->ghost_start(Direction::X); ix <= layout->ghost_end(Direction::X); ++ix)
     {

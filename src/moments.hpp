@@ -45,9 +45,12 @@ void bulk_velocity(std::vector<Population<dimension>> const& populations, Field<
     }
     for (auto ix = 0; ix < N.data().size(); ++ix)
     {
-        V.x(ix) = V.x(ix)/N(ix);
-        V.y(ix) = V.y(ix)/N(ix);
-        V.z(ix) = V.z(ix)/N(ix);
+        if (N(ix) != 0.0)
+        {
+            V.x(ix) = V.x(ix)/N(ix);
+            V.y(ix) = V.y(ix)/N(ix);
+            V.z(ix) = V.z(ix)/N(ix);
+        }
     }
 }
 

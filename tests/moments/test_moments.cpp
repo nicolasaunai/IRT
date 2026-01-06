@@ -43,7 +43,7 @@ void test_moments()
     for (int ix = layout->dual_dom_start(Direction::X);
          ix <= layout->dual_dom_end(Direction::X); ++ix)
     {
-        double x = layout->coordinate(Direction::X, Quantity::Bx, ix); //Taking everything as primal, including posisition
+        double x = layout->coordinate(Direction::X, Quantity::Bx, ix); //Taking everything as primal, including position
         std::cout << x << "  "
                   << N(ix) << "  "
                   << V.x(ix) << "  "
