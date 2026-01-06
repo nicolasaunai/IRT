@@ -46,7 +46,54 @@ public:
     {
         for (auto& particle : particles)
         {
-            // TODO implement the Boris pusher
+            double const dt = this->dt_;
+            particle.position[0] += particle.v[0] * dt/2.0; 
+
+            double const dx = this->layout_->cell_size((Direction::X));
+            double const x_over_dx = particle.position[0]/dx;
+            int const iCell = static_cast<int>(x_over_dx + this->layout_->dual_dom_start(Direction::X));
+            double const reminder = (x_over_dx + this->layout_->dual_dom_start(Direction::X)) - iCell;
+
+            double const Ex_interp = interpolate(E.x, iCell, reminder);
+            double const Ey_interp = interpolate(E.y, iCell, reminder);
+            double const Ez_interp = interpolate(E.z, iCell, reminder);
+            double const Bx_interp = interpolate(B.x, iCell, reminder);
+            double const By_interp = interpolate(B.y, iCell, reminder);
+            double const Bz_interp = interpolate(B.z, iCell, reminder);
+
+            std::array<double, 3> v_minus;
+            double const qdt_over_2m = (particle.charge * dt) / (2.0 * particle.mass);
+            v_minus[0] = particle.v[0] + Ex_interp * qdt_over_2m;
+            v_minus[1] = particle.v[1] + Ey_interp * qdt_over_2m;
+            v_minus[2] = particle.v[2] + Ez_interp * qdt_over_2m;
+
+            std::array<double, 3> vector_t;
+            vector_t[0] = Bx_interp * qdt_over_2m;
+            vector_t[1] = By_interp * qdt_over_2m;
+            vector_t[2] = Bz_interp * qdt_over_2m;
+
+            std::array<double, 3> v_prime;
+            v_prime[0] = v_minus[0] + ( v_minus[1] * vector_t[2] - v_minus[2] * vector_t[1] );
+            v_prime[1] = v_minus[1] + ( v_minus[2] * vector_t[0] - v_minus[0] * vector_t[2] );
+            v_prime[2] = v_minus[2] + ( v_minus[0] * vector_t[1] - v_minus[1] * vector_t[0] );
+
+            std::array<double, 3> vector_s;
+            double const vector_t_squared = vector_t[0] * vector_t[0] + vector_t[1] * vector_t[1] + vector_t[2] * vector_t[2];
+            double const vector_s_prefactor = 2.0 / ( 1.0 + vector_t_squared );
+            vector_s[0] = vector_s_prefactor * vector_t[0];
+            vector_s[1] = vector_s_prefactor * vector_t[1];
+            vector_s[2] = vector_s_prefactor * vector_t[2];
+
+            std::array<double, 3> v_plus;
+            v_plus[0] = v_minus[0] + ( v_prime[1] * vector_s[2] - v_prime[2] * vector_s[1] );
+            v_plus[1] = v_minus[1] + ( v_prime[2] * vector_s[0] - v_prime[0] * vector_s[2] );
+            v_plus[2] = v_minus[2] + ( v_prime[0] * vector_s[1] - v_prime[1] * vector_s[0] );
+
+            particle.v[0] = v_plus[0] + Ex_interp * qdt_over_2m;
+            particle.v[1] = v_plus[1] + Ey_interp * qdt_over_2m;
+            particle.v[2] = v_plus[2] + Ez_interp * qdt_over_2m;
+
+            particle.position[0] += particle.v[0] * dt/2.0; 
         }
     }
 
